@@ -1,0 +1,19 @@
+# Django database
+db.sqlite3
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environment
+venv/
+
+# Django project files you don’t want tracked
+storeBackend/
+
+# Local settings
+*.env
+
+# Media files
+media/
