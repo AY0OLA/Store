@@ -1,17 +1,43 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Items
+from .models import Items, Category
 from django.contrib.auth.decorators import login_required
-from .forms import NewItemForm
+from .forms import NewItemForm, EditItemForm
+from django.db.models import Q
+
+
+def items(request):
+    items = Items.objects.filter(is_sold=False)
+    categories = Category.objects.all()
+    category_id = request.GET.get('category', 0)
+    query = request.GET.get('query', '')
+
+    if category_id:
+        items = items.filter(Category_id=category_id) 
+
+    if query:
+        items = items.filter(
+            Q(name__icontains=query) | Q(description__icontains=query)
+        )
+
+    return render(request, 'item/items.html', {
+        'items': items,
+        'query': query,
+        'categories': categories,
+        'category_id': int(category_id)
+    })
 
 
 def detail(request, pk):
-    item =get_object_or_404(Items, pk=pk)
-    related_item = Items.objects.filter(Category=item.Category, is_sold=False).exclude(pk=pk)[0:3]
+    item = get_object_or_404(Items, pk=pk)
+    related_items = Items.objects.filter(
+        Category=item.Category, is_sold=False
+    ).exclude(pk=pk)[:3]
 
-    return render(request, 'item/detail.html',{
+    return render(request, 'item/detail.html', {
         'item': item,
-        'related_items': related_item
+        'related_items': related_items
     })
+
 
 @login_required
 def new(request):
@@ -22,22 +48,37 @@ def new(request):
             item = form.save(commit=False)
             item.created_by = request.user
             item.save()
-
-            return redirect('item:detail',pk=item.id)
-
-    else:        
+            return redirect('item:detail', pk=item.id)
+    else:
         form = NewItemForm()
 
-    return render(request, 'item/form.html',{
+    return render(request, 'item/form.html', {
         'form': form,
         'title': 'New item'
     })
 
 
 @login_required
-def delect(request, pk):
+def edit(request, pk):
+    item = get_object_or_404(Items, pk=pk, created_by=request.user)
+
+    if request.method == 'POST':
+        form = EditItemForm(request.POST, request.FILES, instance=item)
+
+        if form.is_valid():
+            form.save()
+            return redirect('item:detail', pk=item.id)
+    else:
+        form = EditItemForm(instance=item)
+
+    return render(request, 'item/form.html', {
+        'form': form,
+        'title': 'Edit item'
+    })
+
+
+@login_required
+def delete(request, pk):
     item = get_object_or_404(Items, pk=pk, created_by=request.user)
     item.delete()
-
-
     return redirect('dashboard:index')

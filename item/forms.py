@@ -29,3 +29,27 @@ class NewItemForm(forms.ModelForm):
                 'class': INPUT_CLASSESS
             }),
         }
+
+class EditItemForm(forms.ModelForm):
+    class Meta:
+        model = Items
+        fields = ('name', 'description','price','image', 'is_sold')
+
+        widgets = {
+           
+            'name': forms.TextInput(attrs={
+                'placeholder': 'Item Name',
+                'class': INPUT_CLASSESS
+            }),
+            'description': forms.Textarea(attrs={
+                'placeholder': 'Item Description',
+                'class': INPUT_CLASSESS
+            }),
+            'price': forms.NumberInput(attrs={
+                'placeholder': 'Item Price',
+                'class': INPUT_CLASSESS
+            }),
+            'image': forms.FileInput(attrs={
+                'class': INPUT_CLASSESS
+            }),
+        }
