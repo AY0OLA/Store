@@ -8,8 +8,10 @@ __pycache__/
 
 # Virtual environment
 venv/
+.env
 
 # Django project files you don’t want tracked
 storeBackend/
 
-
+# Docker
+docker-compose.yml
