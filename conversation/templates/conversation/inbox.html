@@ -1,15 +1,15 @@
 {% extends 'core/base.html' %}
 
 {% block title %}
-    New Conversation
+    Inbox
 {% endblock %}
 
 {% block content %}
-    <h1 class="mb-6 text-3xl">New Conversation</h1>
+    <h1 class="mb-6 text-3xl">Inbox</h1>
 
     <div class="space-y-6">
         {% for conversation in conversations%}
-            <a href="{{%ur 'conversation:detail' co%}} conversation.is=id" class="block">
+            <a href="{%url 'conversation:detail' conversation.id%}" class="block">
                 <div class="p-6 flex bg-gray-100 rounded-xl">
                     <div class="pr-6">
                         <img src="{{conversation.item.image.url}}" class="w-20 rounded-xl" >

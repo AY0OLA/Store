@@ -45,7 +45,7 @@ def new_conversation(request, item_pk):
     conversations = Conversation.objects.filter(item=item).filter(members=[request.user.id])
 
     if conversations:
-        pass # redirect to conversation
+        return redirect('conversation:detail',pk=conversations.first().id)
 
     if request.method == 'POST':
         form =ConversationMessageForm(request.POST)
@@ -82,7 +82,7 @@ def inbox(request):
 def detail(request, pk):
     conversations = Conversation.objects.filter(members=[request.user.id]).get(pk=pk)
 
-    if request.method == 'POST'
+    if request.method == 'POST':
         form = ConversationMessageForm(request.POST)
 
         if form.is_vaild:

@@ -12,8 +12,4 @@ venv/
 # Django project files you don’t want tracked
 storeBackend/
 
-# Local settings
-*.env
 
-# Media files
-media/
